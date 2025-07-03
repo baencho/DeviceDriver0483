@@ -1,5 +1,6 @@
 #include "gmock/gmock.h"
 #include "device_driver.h"
+#include <string>
 using namespace testing;
 
 class FlashMemoryDeviceMock : public FlashMemoryDevice {
@@ -20,6 +21,26 @@ TEST(DeviceDriver, ReadFromHW) {
 
 	int data = driver.read(0xFF);
 	EXPECT_EQ('5', data);
+}
+
+TEST(DeviceDriver, ReadFromHWFail) {
+	// TODO : replace hardware with a Test Double
+	//FlashMemoryDevice* hardware = nullptr;
+	FlashMemoryDeviceMock hardware;
+	DeviceDriver driver{ &hardware };
+
+	EXPECT_CALL(hardware, read(_))
+		.WillOnce(Return(static_cast<unsigned char>('5')))
+		.WillOnce(Return(static_cast<unsigned char>('5')))
+		.WillRepeatedly(Return(static_cast<unsigned char>('A')));
+
+	try {
+		int data = driver.read(0xFF);
+		FAIL();
+	}
+	catch (std::exception& e) {
+		EXPECT_EQ(std::string{ e.what() }, std::string{ "Not same value for 5 times" });
+	}
 }
 
 int main() {
