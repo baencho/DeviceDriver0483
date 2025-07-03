@@ -5,17 +5,27 @@ DeviceDriver::DeviceDriver(FlashMemoryDevice* hardware) : m_hardware(hardware)
 {
 }
 
+class ReadFailException : public std::exception {
+private:
+    const std::string message = "ReadFailException";
+
+public:
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+};
+
 int DeviceDriver::read(long address)
 {
     // TODO: implement this method properly
     int ret = (int)(m_hardware->read(address));
-    for (int i = 0; i<4; i++) {
+    for (int i = 0; i < 4; i++) {
         int temp = (int)(m_hardware->read(address));
-        if (temp == ret) {
-            ret = temp;
+        if (temp == ret) {;
             continue;
         }
-        throw std::runtime_error("Not same value for 5 times");
+        ReadFailException readFailException;
+        throw readFailException;
     }
     return ret;
 }

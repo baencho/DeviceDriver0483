@@ -39,7 +39,7 @@ TEST(DeviceDriver, ReadFromHWFail) {
 		FAIL();
 	}
 	catch (std::exception& e) {
-		EXPECT_EQ(std::string{ e.what() }, std::string{ "Not same value for 5 times" });
+		EXPECT_EQ(std::string{ e.what() }, std::string{ "ReadFailException" });
 	}
 }
 
