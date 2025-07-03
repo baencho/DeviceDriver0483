@@ -15,27 +15,38 @@ public:
     }
 };
 
-int DeviceDriver::read(long address)
-{
-    // TODO: implement this method properly
-    int ret = (int)(m_hardware->read(address));
-    for (int i = 0; i < 4; i++) {
-        int temp = (int)(m_hardware->read(address));
-        if (temp == ret) {;
-            continue;
-        }
-        ReadFailException readFailException;
-        throw readFailException;
+class WriteFailException : public std::exception {
+private:
+    const std::string message = "WriteFailException";
+
+public:
+    const char* what() const noexcept override {
+        return message.c_str();
     }
-    return ret;
+};
+
+void DeviceDriver::checkReadPostCondition(int firstRead, long address) {
+    for (int i = 0; i < READ_CREDIBILITY_COUNT - 1; i++) {
+        int temp = (int)(m_hardware->read(address));
+        if (temp == firstRead) continue;
+        throw ReadFailException();
+    }
 }
 
-void DeviceDriver::write(long address, int data)
-{
-    // TODO: implement this method
-    int ret = (int)(m_hardware->read(address));
-    if (ret == 0xFF) {
-        throw std::runtime_error("WriteFailException");
+void DeviceDriver::checkWritePreCondition(long address) {
+    int readResult = (int)(m_hardware->read(address));
+    if (readResult == PAGE_CLEAN) {
+        throw WriteFailException();
     }
+}
+
+int DeviceDriver::read(long address) {
+    int result = (int)(m_hardware->read(address));
+    checkReadPostCondition(result, address);
+    return result;
+}
+
+void DeviceDriver::write(long address, int data) {
+    checkWritePreCondition(address);
     m_hardware->write(address, (unsigned char)data);
 }

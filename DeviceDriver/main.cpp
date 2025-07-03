@@ -10,8 +10,6 @@ public:
 };
 
 TEST(DeviceDriver, ReadFromHW) {
-	// TODO : replace hardware with a Test Double
-	//FlashMemoryDevice* hardware = nullptr;
 	FlashMemoryDeviceMock hardware;
 	DeviceDriver driver{ &hardware };
 
@@ -24,8 +22,6 @@ TEST(DeviceDriver, ReadFromHW) {
 }
 
 TEST(DeviceDriver, ReadFromHWFail) {
-	// TODO : replace hardware with a Test Double
-	//FlashMemoryDevice* hardware = nullptr;
 	FlashMemoryDeviceMock hardware;
 	DeviceDriver driver{ &hardware };
 
@@ -44,7 +40,6 @@ TEST(DeviceDriver, ReadFromHWFail) {
 }
 
 TEST(DeviceDriver, WriteFromHW) {
-	//FlashMemoryDevice* hardware = nullptr;
 	FlashMemoryDeviceMock hardware;
 	DeviceDriver driver{ &hardware };
 

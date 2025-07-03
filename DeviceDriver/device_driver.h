@@ -10,4 +10,11 @@ public:
 
 protected:
     FlashMemoryDevice* m_hardware;
+
+private:
+    void checkReadPostCondition(int firstRead, long address);
+    void checkWritePreCondition(long address);
+
+    const int READ_CREDIBILITY_COUNT = 5;
+    const int PAGE_CLEAN = 0xFF;
 };
