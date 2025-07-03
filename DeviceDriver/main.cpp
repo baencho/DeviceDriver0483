@@ -15,7 +15,7 @@ public:
 
 	const long RANDOM_ADDRESS = 0xAB;
 	const unsigned char RANDOM_CHAR = '5';
-	const int PAGE_UNCLEAN = 0xFF;
+	const int PAGE_CLEAN = 0xFF;
 };
 
 TEST_F(DeviceDriverFixture, ReadFromHW) {
@@ -46,7 +46,8 @@ TEST_F(DeviceDriverFixture, ReadFromHWFail) {
 
 TEST_F(DeviceDriverFixture, WriteFromHW) {
 	EXPECT_CALL(hardware, read(_))
-		.Times(1);
+		.Times(1)
+		.WillRepeatedly(Return(PAGE_CLEAN));
 
 	EXPECT_CALL(hardware, write(_, _))
 		.Times(1);
@@ -55,6 +56,7 @@ TEST_F(DeviceDriverFixture, WriteFromHW) {
 }
 
 TEST_F(DeviceDriverFixture, WriteFromHWFail) {
+	const int PAGE_UNCLEAN = 0xA;
 	EXPECT_CALL(hardware, read(_))
 		.Times(1)
 		.WillRepeatedly(Return(PAGE_UNCLEAN));
