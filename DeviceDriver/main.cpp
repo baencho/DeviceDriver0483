@@ -57,6 +57,25 @@ TEST(DeviceDriver, WriteFromHW) {
 	driver.write(0xA, 0xB);
 }
 
+TEST(DeviceDriver, WriteFromHWFail) {
+	FlashMemoryDeviceMock hardware;
+	DeviceDriver driver{ &hardware };
+
+	EXPECT_CALL(hardware, read(_))
+		.Times(1)
+		.WillRepeatedly(Return(0xFF));
+
+	EXPECT_CALL(hardware, write(_, _))
+		.Times(0);
+
+	try {
+		driver.write(0xA, 0xB);
+	}
+	catch (std::exception& e) {
+		EXPECT_EQ(std::string{ e.what() }, std::string{ "WriteFailException" });
+	}
+}
+
 int main() {
 	::testing::InitGoogleMock();
 	return RUN_ALL_TESTS();
