@@ -35,7 +35,7 @@ void DeviceDriver::checkReadPostCondition(int firstRead, long address) {
 
 void DeviceDriver::checkWritePreCondition(long address) {
     int readResult = (int)(m_hardware->read(address));
-    if (readResult == PAGE_CLEAN) {
+    if (readResult == PAGE_UNCLEAN) {
         throw WriteFailException();
     }
 }

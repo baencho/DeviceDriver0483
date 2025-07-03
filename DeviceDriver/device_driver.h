@@ -16,5 +16,5 @@ private:
     void checkWritePreCondition(long address);
 
     const int READ_CREDIBILITY_COUNT = 5;
-    const int PAGE_CLEAN = 0xFF;
+    const int PAGE_UNCLEAN = 0xFF;
 };
