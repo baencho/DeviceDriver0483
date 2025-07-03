@@ -19,7 +19,7 @@ TEST(DeviceDriver, ReadFromHW) {
 		.Times(5)
 		.WillRepeatedly(Return(static_cast<unsigned char>('5')));
 
-	int data = driver.read(0xFF);
+	int data = driver.read(0xFF);	
 	EXPECT_EQ('5', data);
 }
 
@@ -41,6 +41,20 @@ TEST(DeviceDriver, ReadFromHWFail) {
 	catch (std::exception& e) {
 		EXPECT_EQ(std::string{ e.what() }, std::string{ "ReadFailException" });
 	}
+}
+
+TEST(DeviceDriver, WriteFromHW) {
+	//FlashMemoryDevice* hardware = nullptr;
+	FlashMemoryDeviceMock hardware;
+	DeviceDriver driver{ &hardware };
+
+	EXPECT_CALL(hardware, read(_))
+		.Times(1);
+
+	EXPECT_CALL(hardware, write(_, _))
+		.Times(1);
+
+	driver.write(0xA, 0xB);
 }
 
 int main() {
