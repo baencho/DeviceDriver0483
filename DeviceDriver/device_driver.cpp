@@ -33,5 +33,9 @@ int DeviceDriver::read(long address)
 void DeviceDriver::write(long address, int data)
 {
     // TODO: implement this method
+    int ret = (int)(m_hardware->read(address));
+    if (ret == 0xFF) {
+        throw std::runtime_error("WriteFailException");
+    }
     m_hardware->write(address, (unsigned char)data);
 }
